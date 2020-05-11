@@ -34,29 +34,6 @@ A conditional GAN combined with spatial attention unit maps low resolution(LR) e
 <img src='imgs/deneme2.png' width=640/> 
 </p>
 
-#### Super-resolution results on 8×enlargement
-
-Each set consists of low resolution image,high  resolution  image,  SRGAN,  DBPN,  RCAN  and  EndoL2H,  respectively. 
-
-First two rows are SR results for esophagitis which is basically inflammatory disease of esophagus, ulcerative colitis similarly inflammatory bowel disease and polyps abnormal growth of mucous membrane of small and large intestine. The others are the tuples to show EndoL2H inputs and their corresponding attention maps merged representations.
-
-<p align="center">
-  <img src='imgs/1.png' width=512/> 
-  <img src='imgs/2.png' width=512/> 
-  <img src='imgs/4.png' width=512/> 
-  <img src='imgs/5.png' width=512/> 
-</p>
-
-#### The evaluation of image groups in terms of structural similarity
-
-**a)** Resulting GMSD maps. Red  color denotes  higher GMSD  values  indicating low  structural similarity with  the  original image  and blue color  represents  low  GMSD  values indicating a high  structural similarity with the original image.
-
-**b)** Resulting SSIM heat maps. Red  color  denotes  lower SSIM  values  representing a low  structural  similarity  with  the  original  image  and  blue  color  represent  high  SSIM  values representing a high structural similarity with the original image.
-
-<p align="center">
-  <img src='imgs/white_GMSD_SSIM.png' width=512/> 
-</p>
-
 ## Getting Started
 
 ### 1. Installation
@@ -85,13 +62,28 @@ cd EndoL2H
   - For pip users, please type the command `pip install -r requirements.txt`.
   - For Conda users, you can use an installation script `./scripts/conda_deps.sh`. Alternatively, you can create a new Conda environment using `conda env create -f environment.yml`.
   
-### 3. Dataset
+### 3. Code Base Structure
+
+The code base structure is explained below:
+- **train.py:** Script for image-to-image translation. It works for different models (with option '--model': e.g. pipx2pix, cyclegan, colorization) and various datasets (with option '--dataset_mode': e.g. aligned, unaligned, single, colorization). It creates model, dataset and visualizer given the option. Then, it does training. Use '--continue_train' and '--epoch_count' to resume your previous training. 
+- **test.py:** You can use this script to test the model after training. First, it creates model and dataset given the option. Then, it runs interference for --num_test images and save results to an HTML file. Use '--results_dir' to specify the results directory. 
+- **networks.py:** It contains PyTorch model definitions for all network.
+- **base_options.py:** It defines options used during both training and test time.
+- **combine_A_and_B.py:** pix2pix training requires paired data. It generates training data in the form of pairs of images {A,B}, where A and B are two different depictions of the same underlying scene. Corresponding images in a pair {A,B} must be the same size and have the same filename. Once the data is formatted this way, call:
+
+```bash
+python datasets/combine_A_and_B.py --fold_A /path/to/data/A --fold_B /path/to/data/B --fold_AB /path/to/data
+```
+
+This will combine each pair of images (A,B) into a single image file, ready for training.
+  
+### 4. Dataset
 
 - Our dataset is a part of [The Kvasir Dataset](https://datasets.simula.no/kvasir/
 ).
-- The data split we used in training can be downloaded [here](https://1drv.ms/u/s!AsXONMc_kIHJb1pqU_1CGv9RBXk?e=5xGbvI).
+- The data split we used in training can be downloaded [here](https://drive.google.com/open?id=189-QVefK-uoD9fwypRCIKzDWqh_F69R8).
 
-### 4. Dataset Organization
+### 5. Dataset Organization
 
 Data needs to be arranged in the following format:
 
@@ -102,17 +94,60 @@ EndoL2H                 # Path to main folder
             |
             ├── A       # High resolution images
             |   ├── test
+            |   |    ├──fold1
+            |   |        ├──1.jpg
+            |   |        ├──2.jpg
+            |   |        ├── ...
+            |   |    ├── ...
+            |   |    └──fold5
             |   ├── train
+            |   |    ├──fold1
+            |   |        ├──1.jpg
+            |   |        ├──2.jpg
+            |   |        ├── ...
+            |   |    ├── ...
+            |   |    └──fold5        
             |   └── val
+            |   |    ├──1.jpg
+            |   |    ├──2.jpg
+            |   |    ├── ...
             |
             └── B       # Low resolution images
                 ├── test
+                |    ├──fold1
+                |        ├──1.jpg
+                |        ├── ...
+                |    ├── ...
+                |    └──fold5
                 ├── train
+                |    ├──fold1
+                |        ├──1.jpg
+                |        ├── ...
+                |    ├── ...
+                |    └──fold5
                 └── val
-                          
+                     ├──1.jpg
+                     ├── ...
+                 
+└── checkpoints 
+     |
+     └── generator_name #e.g. unet256, unet128, resnet_6blocks, resnet_9blocks
+         ├── web
+         |     ├── images
+         |     |    ├── epoch001_fake_B.png
+         |     |    ├── epoch001_real_A.png
+         |     |    ├── epoch001_real_B.png
+         |     |    ├── ...
+         |     └── index.html
+         |
+         ├── latest_net_D.pth
+         ├── latest_net_G.pth
+         ├── opt.txt
+         └── loss_log.txt
 ```
 
-### 5. Training
+
+### 6. Training
 
  To train a model:
 
@@ -123,7 +158,7 @@ python train.py --dataroot ./datasets/${nameOfDataset} --name unet_256 --model p
 - To see more intermediate results, check out  `./checkpoints/unet_256/web/index.html`.
 - To view training results and loss plots, run `python -m visdom.server` and click the URL <http://localhost:8097.>
 
-### 6. Testing
+### 7. Testing
 
 To test the model:
 
@@ -133,11 +168,38 @@ python test.py --dataroot ./datasets/${nameOfDataset} --name unet_256 --model pi
 
 - The test results will be saved to a html file here: `./results/unet_256/test_latest/index.html`.
 
+## Results
+
+#### Super-resolution results on 8×enlargement
+
+Each set consists of low resolution image,high  resolution  image,  SRGAN,  DBPN,  RCAN  and  EndoL2H,  respectively. 
+
+First two rows are SR results for esophagitis which is basically inflammatory disease of esophagus, ulcerative colitis similarly inflammatory bowel disease and polyps abnormal growth of mucous membrane of small and large intestine. The others are the tuples to show EndoL2H inputs and their corresponding attention maps merged representations.
+
+<p align="center">
+  <img src='imgs/1.png' width=512/> 
+  <img src='imgs/2.png' width=512/> 
+  <img src='imgs/4.png' width=512/> 
+  <img src='imgs/5.png' width=512/> 
+</p>
+
+#### The evaluation of image groups in terms of structural similarity
+
+**a)** Resulting GMSD maps. Red  color denotes  higher GMSD  values  indicating low  structural similarity with  the  original image  and blue color  represents  low  GMSD  values indicating a high  structural similarity with the original image.
+
+**b)** Resulting SSIM heat maps. Red  color  denotes  lower SSIM  values  representing a low  structural  similarity  with  the  original  image  and  blue  color  represent  high  SSIM  values representing a high structural similarity with the original image.
+
+<p align="center">
+  <img src='imgs/white_GMSD_SSIM.png' width=512/> 
+</p>
+
+#### Quantitative Results
+
 ## Reproducibility
 
-You can download our pretrained model [here](https://1drv.ms/u/s!AsXONMc_kIHJbhEIjkvPpnvxeCg?e=y6NfoA)
+You can download our pretrained model [here](https://drive.google.com/open?id=1rAi5i5vTdTwtJkWbz2gHaOXemLjaWNGr)
 
-- The pretrained model is saved at `./checkpoints/unet_256/latest_net_G.pth`.
+- The pretrained model is saved at `./checkpoints/unet_256/latest_net_G.pth` and `./checkpoints/unet_256/latest_net_D.pth`. 
 
 ## License
 
