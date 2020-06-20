@@ -23,7 +23,7 @@ Our main contributions are as follows:
 A conditional GAN combined with spatial attention unit maps low resolution(LR) endoscopic images to diagnostically relevant  high resolution(HR) endoscopic images. Unlike an unconditional GAN, both the generator and discriminator observe the input LR images.
 
 <p align="center">
-<img src='imgs/summary_4.png' width=384/> 
+<img src='imgs/systemSummary.png' width=384/> 
 </p>
 
 #### Network Architecture
