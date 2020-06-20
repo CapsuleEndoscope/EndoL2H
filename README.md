@@ -31,7 +31,7 @@ A conditional GAN combined with spatial attention unit maps low resolution(LR) e
 **a)** Overall system architecture of EndoL2H super-resolution framework. A low resolution input image is fed to the generator that creates an estimated high resolution counterpart, which is then served to the discriminator. The Markovian discriminator takes tuples of an LR input image and the corresponding HR image (real or generated), and tries to recognize whether the HR image is real or fake. Our generator is U-net with additional SAB layer which is sequentially downsampling tensor by factor of 2 until the latent feature representation and upsampled by the following decoder layers by a factor of 2. We are using convolutional PatchGAN as a classifier which penalize the structure in accordance with the image patch sizes (30x30).  **b)** is the flow diagram of the spatial attention block (SAB) which is selectively focus on clinically more relevant regions and also its output images are presented. **c)** The feature maps of attention U-Net which is the summary of applied filters and their input-output tensor sizes for 8x.The low resolution images are of 128x128 sizes and their size changes before and after each convolution layers are given. As seen, SAB block preserves the tensor sizes. Finally, the tensor size ends up with 1024x1024 for 8x. 
 
 <p align="center">
-<img src='imgs/Z1.png' width=600/> 
+<img src='imgs/architectureOverview.png' width=600/> 
 </p>
 
 ## Getting Started
