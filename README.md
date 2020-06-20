@@ -178,10 +178,8 @@ Each set consists of low resolution image,high  resolution  image,  SRGAN,  DBPN
 First two rows are SR results for esophagitis which is basically inflammatory disease of esophagus, ulcerative colitis similarly inflammatory bowel disease and polyps abnormal growth of mucous membrane of small and large intestine. The others are the tuples to show EndoL2H inputs and their corresponding attention maps merged representations.
 
 <p align="center">
-  <img src='imgs/1.png' width=512/> 
-  <img src='imgs/2.png' width=512/> 
-  <img src='imgs/4.png' width=512/> 
-  <img src='imgs/5.png' width=512/> 
+  <img src='imgs/SR_performance.png' width=512/> 
+  <img src='imgs/attention_map.png' width=512/> 
 </p>
 
 #### The evaluation of image groups in terms of structural similarity
