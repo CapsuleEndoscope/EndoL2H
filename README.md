@@ -173,12 +173,15 @@ python test.py --dataroot ./datasets/${nameOfDataset} --name unet_256 --model pi
 
 #### Super-resolution results on 8×enlargement
 
-Each set consists of low resolution image,high  resolution  image,  SRGAN,  DBPN,  RCAN  and  EndoL2H,  respectively. 
-
-First two rows are SR results for esophagitis which is basically inflammatory disease of esophagus, ulcerative colitis similarly inflammatory bowel disease and polyps abnormal growth of mucous membrane of small and large intestine. The others are the tuples to show EndoL2H inputs and their corresponding attention maps merged representations.
+Super-resolution  results  for  EndoL2H,  DBPN,  RCAN  and  SRGAN with cropped and zoomed regions inside the yellow squares on 8×upscale factor and for the five classes of the dataset, abnormal  classes:  esophagitis  (inflammatory  disease  of  esophagus),  polyps  (abnormal  growth  of  mucous  membrane  of small  and  large  intestine),  ulcerative  colitis  (inflammatory  bowel  disease), z-line (gastroesophageal junction images where the esophagus meetsthe stomach) and for pylorus images, respectively. 
 
 <p align="center">
   <img src='imgs/SR_performance.png' width=512/> 
+</p>
+
+Each image pair consists of LR images and corresponding SAB output visualised using Grad-CAMmethodology  [50].  The  main  aim  of  SAB  is  to  selectively  put  emphasis  on  more  distinctive  regions  with  unusual  gradientalterations that inherently deserves attention as suspicious areas, in this case for example, regions with polyps, inflammatorytissue  or  normal  tissue  regions  containing  more  texture  and  sharp  edges.
+
+<p align="center">
   <img src='imgs/attention_map.png' width=512/> 
 </p>
 
